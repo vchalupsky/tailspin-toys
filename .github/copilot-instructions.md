@@ -37,6 +37,31 @@ This is a crowdfunding platform for games with a developer theme. The applicatio
 - Use TypeScript with explicit types for function parameters and return values, especially in the data layer (`db/`, `src/lib/`)
 - Frontend code (TypeScript, Astro) must pass ESLint checks (`npm run lint`)
 
+### Comment and documentation philosophy
+
+**Comment intent, not mechanics.** A comment should explain *why* a piece of code exists — the reasoning behind a non-obvious decision, a constraint, or a trade-off — not restate *what* the code already says. Delete comments that merely paraphrase the line below them.
+
+**TSDoc/JSDoc for the data layer.** Every exported function in `db/` and `src/lib/` must have a TSDoc comment that describes:
+- Its purpose (one-sentence summary)
+- Each parameter (`@param name — description`)
+- The return value (`@returns description`)
+
+The injectable `db` parameter must be documented so the testing pattern stays clear. Example:
+
+```ts
+/**
+ * Returns all game IDs ordered by title for deterministic static-path generation.
+ *
+ * @param db - Drizzle database instance (real or in-memory test client)
+ * @returns Ordered array of game IDs
+ */
+export async function getAllGameIds(db: Database): Promise<number[]> { … }
+```
+
+**Document Astro component Props.** Each reusable `.astro` component must have a JSDoc comment on its `Props` interface (or each property) explaining what the component does and what each prop controls. See `astro.instructions.md`.
+
+**Keep comments current.** An outdated comment is a bug. Update or remove comments in the same change that touches the related code.
+
 ### Data Layer Patterns (Drizzle + Node SQLite)
 
 - Define tables in `db/schema.ts`; manage schema changes with drizzle-kit migrations - see `drizzle.instructions.md`
